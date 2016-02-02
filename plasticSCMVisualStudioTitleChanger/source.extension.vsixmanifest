@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
+    <Metadata>
+        <Identity Id="433f343b-126f-4dc5-baf8-bc12f7ca07d9" Version="1.0" Language="en-US" Publisher="Codice Software" />
+        <DisplayName>plasticSCMVisualStudioTitleChanger</DisplayName>
+        <Description>This extensions allows to include information about the Plastic SCM workspace selector inside the Visual Studio window title</Description>
+    </Metadata>
+    <Installation InstalledByMsi="false">
+        <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[10.0,14.0]" />
+    </Installation>
+    <Dependencies>
+        <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
+        <Dependency Id="Microsoft.VisualStudio.MPF.12.0" DisplayName="Visual Studio MPF 12.0" d:Source="Installed" Version="[12.0]" />
+    </Dependencies>
+    <Assets>
+        <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
+    </Assets>
+</PackageManifest>
