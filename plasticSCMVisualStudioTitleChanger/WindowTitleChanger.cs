@@ -59,7 +59,7 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
                 {
                     try
                     {
-                        string newTitle = "Hello world";
+                        string newTitle = mBuilder.BuildWindowTitle(mDTE);
                         System.Windows.Application.Current.MainWindow.Title = mDTE.MainWindow.Caption;
                         if (System.Windows.Application.Current.MainWindow.Title != newTitle)
                         {
@@ -87,37 +87,52 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
 
         WindowTitleChanger(DTE2 dte)
         {
+            mBuilder = new WindowTitleBuilder();
+            
             mDTE = dte;
-            mDTE.Events.DebuggerEvents.OnEnterBreakMode += this.OnIdeEvent;
-            mDTE.Events.DebuggerEvents.OnEnterRunMode += this.OnIdeEvent;
-            mDTE.Events.DebuggerEvents.OnEnterDesignMode += this.OnIdeEvent;
-            mDTE.Events.DebuggerEvents.OnContextChanged += this.OnIdeEvent;
-            mDTE.Events.SolutionEvents.AfterClosing += this.OnIdeEvent;
-            mDTE.Events.SolutionEvents.Opened += this.OnIdeEvent;
-            mDTE.Events.SolutionEvents.Renamed += this.OnIdeEvent;
-            mDTE.Events.WindowEvents.WindowCreated += this.OnIdeEvent;
-            mDTE.Events.WindowEvents.WindowClosing += this.OnIdeEvent;
-            mDTE.Events.WindowEvents.WindowActivated += this.OnIdeEvent;
-            mDTE.Events.DocumentEvents.DocumentOpened += this.OnIdeEvent;
-            mDTE.Events.DocumentEvents.DocumentClosing += this.OnIdeEvent;
+            mDTE.Events.DebuggerEvents.OnEnterBreakMode += OnIdeEvent;
+            mDTE.Events.DebuggerEvents.OnEnterRunMode += OnIdeEvent;
+            mDTE.Events.DebuggerEvents.OnEnterDesignMode += OnIdeEvent;
+            mDTE.Events.DebuggerEvents.OnContextChanged += OnIdeEvent;
+            mDTE.Events.SolutionEvents.AfterClosing += SolutionClosed;
+            mDTE.Events.SolutionEvents.Opened += SolutionOpened;
+            mDTE.Events.SolutionEvents.Renamed += OnIdeEvent;
+            mDTE.Events.WindowEvents.WindowCreated += OnIdeEvent;
+            mDTE.Events.WindowEvents.WindowClosing += OnIdeEvent;
+            mDTE.Events.WindowEvents.WindowActivated += OnIdeEvent;
+            mDTE.Events.DocumentEvents.DocumentOpened += OnIdeEvent;
+            mDTE.Events.DocumentEvents.DocumentClosing += OnIdeEvent;
         }
 
         void DisposeEvents()
         {
-            mDTE.Events.DebuggerEvents.OnEnterBreakMode -= this.OnIdeEvent;
-            mDTE.Events.DebuggerEvents.OnEnterRunMode -= this.OnIdeEvent;
-            mDTE.Events.DebuggerEvents.OnEnterDesignMode -= this.OnIdeEvent;
-            mDTE.Events.DebuggerEvents.OnContextChanged -= this.OnIdeEvent;
-            mDTE.Events.SolutionEvents.AfterClosing -= this.OnIdeEvent;
-            mDTE.Events.SolutionEvents.Opened -= this.OnIdeEvent;
-            mDTE.Events.SolutionEvents.Renamed -= this.OnIdeEvent;
-            mDTE.Events.WindowEvents.WindowCreated -= this.OnIdeEvent;
-            mDTE.Events.WindowEvents.WindowClosing -= this.OnIdeEvent;
-            mDTE.Events.WindowEvents.WindowActivated -= this.OnIdeEvent;
-            mDTE.Events.DocumentEvents.DocumentOpened -= this.OnIdeEvent;
-            mDTE.Events.DocumentEvents.DocumentClosing -= this.OnIdeEvent;
+            mDTE.Events.DebuggerEvents.OnEnterBreakMode -= OnIdeEvent;
+            mDTE.Events.DebuggerEvents.OnEnterRunMode -= OnIdeEvent;
+            mDTE.Events.DebuggerEvents.OnEnterDesignMode -= OnIdeEvent;
+            mDTE.Events.DebuggerEvents.OnContextChanged -= OnIdeEvent;
+            mDTE.Events.SolutionEvents.AfterClosing -= SolutionClosed;
+            mDTE.Events.SolutionEvents.Opened -= SolutionOpened;
+            mDTE.Events.SolutionEvents.Renamed -= OnIdeEvent;
+            mDTE.Events.WindowEvents.WindowCreated -= OnIdeEvent;
+            mDTE.Events.WindowEvents.WindowClosing -= OnIdeEvent;
+            mDTE.Events.WindowEvents.WindowActivated -= OnIdeEvent;
+            mDTE.Events.DocumentEvents.DocumentOpened -= OnIdeEvent;
+            mDTE.Events.DocumentEvents.DocumentClosing -= OnIdeEvent;
         }
 
+        void SolutionOpened()
+        {
+            SelectorWatcher.ResetWatcher(mDTE.Solution.FullName, mBuilder);
+            OnIdeEvent();
+        }
+
+        void SolutionClosed()
+        {
+            mBuilder.SetSelector(string.Empty);
+            SelectorWatcher.Dispose();
+            OnIdeEvent();
+        }
+        
         void OnIdeEvent(Window gotfocus, Window lostfocus)
         {
             OnIdeEvent();
@@ -162,6 +177,7 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
 
         static WindowTitleChanger mInstance;
         DTE2 mDTE;
+        WindowTitleBuilder mBuilder;
     }
 }
 

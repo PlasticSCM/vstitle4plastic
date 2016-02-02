@@ -7,9 +7,9 @@ using System.IO;
 
 namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
 {
-    public class WindowTitleBuilder
+    internal class WindowTitleBuilder
     {
-        string BuildWindowTitle(DTE2 dte)
+        internal string BuildWindowTitle(DTE2 dte)
         {
             if (mIdeName == null && dte.MainWindow != null)
                 mIdeName = this.GetIDEName(dte, SELECTOR_PATTERN);
@@ -18,6 +18,14 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
                 return null;
 
             return GetNewTitle(dte, mIdeName, GetWindowTitlePattern(dte));
+        }
+
+        internal void SetSelector(string selector)
+        {
+            lock (mSelectorLock)
+            {
+                mSelector = selector;
+            }
         }
 
         string GetNewTitle(DTE2 dte, string ideName, string pattern)
@@ -38,7 +46,7 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
             pattern = pattern.Replace(DOCUMENT_NAME, GetActiveDocumentName(dte, activeDocument, activeWindow));
             pattern = pattern.Replace(SOLUTION_NAME, GetSolutionName(solution));
             pattern = pattern.Replace(IDE_NAME, ideName);
-            pattern = pattern.Replace(PLASTIC_SELECTOR, GetSelectorString(mSelector));
+            pattern = pattern.Replace(PLASTIC_SELECTOR, GetSelectorString());
 
             return pattern;
         }
@@ -55,21 +63,21 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
                     (window == null || string.IsNullOrEmpty(window.Caption)))
                     return IDE_NAME;
 
-                return string.Format("{0} - {1} - {2}", DOCUMENT_NAME, PLASTIC_SELECTOR, IDE_NAME);
+                return string.Format("{0} - {1}", DOCUMENT_NAME, IDE_NAME);
             }
 
             if (dte.Debugger == null || dte.Debugger.CurrentMode == dbgDebugMode.dbgDesignMode)
             {
-                return string.Format("{0} - {1} - {2}", SOLUTION_NAME, PLASTIC_SELECTOR, IDE_NAME);
+                return string.Format("{0}{1} - {2}", SOLUTION_NAME, PLASTIC_SELECTOR, IDE_NAME);
             }
             if (dte.Debugger.CurrentMode == dbgDebugMode.dbgBreakMode)
             {
-                return string.Format("{0} (Debugging) - {1} - {2}", SOLUTION_NAME, PLASTIC_SELECTOR, IDE_NAME);
+                return string.Format("{0} (Debugging){1} - {2}", SOLUTION_NAME, PLASTIC_SELECTOR, IDE_NAME);
             }
 
             if (dte.Debugger.CurrentMode == dbgDebugMode.dbgRunMode)
             {
-                return string.Format("{0} (Running) - {1} - {2}", SOLUTION_NAME, PLASTIC_SELECTOR, IDE_NAME);
+                return string.Format("{0} (Running){1} - {2}", SOLUTION_NAME, PLASTIC_SELECTOR, IDE_NAME);
             }
 
             return IDE_NAME;
@@ -137,9 +145,14 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
                 Path.GetFileNameWithoutExtension(solution.FullName);
         }
 
-        string GetSelectorString(string selector)
+        string GetSelectorString()
         {
-            return string.Format("{0} {1}", SELECTOR_PATTERN, selector);
+            string selector = GetSelector();
+
+            if (string.IsNullOrEmpty(selector))
+                return selector;
+
+            return string.Format(" - {0} {1} ", SELECTOR_PATTERN, selector);
         }
 
         string GetSelector()
@@ -147,14 +160,6 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
             lock (mSelectorLock)
             {
                 return mSelector;
-            }
-        }
-
-        void SetSelector(string selector)
-        {
-            lock (mSelectorLock)
-            {
-                mSelector = selector;
             }
         }
 

@@ -135,6 +135,7 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="plasticSCMVisualStudioTitleChangerPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SelectorWatcher.cs" />
     <Compile Include="WindowTitleBuilder.cs" />
     <Compile Include="WindowTitleChanger.cs" />
   </ItemGroup>
