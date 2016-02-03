@@ -8,27 +8,24 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
 {
     internal class WindowTitleChanger
     {
-        internal static void Initialize(DTE2 dte)
+        internal WindowTitleChanger(DTE2 dte)
         {
-            mInstance = new WindowTitleChanger(dte);
+            mBuilder = new WindowTitleBuilder();
+
+            mDTE = dte;
+            mDTE.Events.SolutionEvents.AfterClosing += SolutionClosed;
+            mDTE.Events.SolutionEvents.Opened += SolutionOpened;
         }
 
-        internal static void Dispose()
+        internal void Dispose()
         {
-            if (mInstance != null)
-                return;
-
-            mInstance.DisposeEvents();
-        }
-
-        internal static WindowTitleChanger GetInstance()
-        {
-            return mInstance;
+            mDTE.Events.SolutionEvents.AfterClosing -= SolutionClosed;
+            mDTE.Events.SolutionEvents.Opened -= SolutionOpened;
         }
 
         internal void UpdateWindowTitleAsync(object state, EventArgs e)
         {
-            System.Threading.Tasks.Task.Factory.StartNew(mInstance.DoUpdateWindowTitle);
+            System.Threading.Tasks.Task.Factory.StartNew(DoUpdateWindowTitle);
         }
 
         void DoUpdateWindowTitle()
@@ -71,22 +68,13 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
             }
         }
 
-        public static void BeginInvokeOnUIThread(Action action)
+        public void BeginInvokeOnUIThread(Action action)
         {
             var dispatcher = System.Windows.Application.Current.Dispatcher;
             if (dispatcher == null)
                 return;
 
             dispatcher.BeginInvoke(action);
-        }
-
-        WindowTitleChanger(DTE2 dte)
-        {
-            mBuilder = new WindowTitleBuilder();
-            
-            mDTE = dte;
-            mDTE.Events.SolutionEvents.AfterClosing += SolutionClosed;
-            mDTE.Events.SolutionEvents.Opened += SolutionOpened;
         }
 
         void DisposeEvents()
@@ -107,7 +95,6 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
 
         readonly object mUpdateWindowTitleLock = new object();
 
-        static WindowTitleChanger mInstance;
         DTE2 mDTE;
         WindowTitleBuilder mBuilder;
     }

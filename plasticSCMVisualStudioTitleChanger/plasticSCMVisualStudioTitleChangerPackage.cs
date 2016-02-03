@@ -25,20 +25,21 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
         {
             base.Initialize();
 
-            WindowTitleChanger.Initialize((DTE2)(GetGlobalService(typeof(DTE))));
+            mTitleChanger = new WindowTitleChanger((DTE2)(GetGlobalService(typeof(DTE))));
             this.ResetTitleTimer = new System.Windows.Forms.Timer { Interval = TIMER_INTERVAL };
-            this.ResetTitleTimer.Tick += WindowTitleChanger.GetInstance().UpdateWindowTitleAsync;
+            this.ResetTitleTimer.Tick += mTitleChanger.UpdateWindowTitleAsync;
             this.ResetTitleTimer.Start();
         }
 
         protected override void Dispose(bool disposing)
         {
             this.ResetTitleTimer.Dispose();
-            WindowTitleChanger.Dispose();
+            mTitleChanger.Dispose();
             base.Dispose(disposing);
         }
 
         System.Windows.Forms.Timer ResetTitleTimer;
+        WindowTitleChanger mTitleChanger;
 
         const int TIMER_INTERVAL = 1000;
     }
