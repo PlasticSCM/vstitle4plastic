@@ -3,18 +3,21 @@ using System.Threading;
 
 using EnvDTE80;
 using EnvDTE;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
 {
     internal class WindowTitleChanger
     {
-        internal WindowTitleChanger(DTE2 dte)
+        internal WindowTitleChanger(DTE2 dte, IVsActivityLog log)
         {
             mBuilder = new WindowTitleBuilder();
 
             mDTE = dte;
             mDTE.Events.SolutionEvents.AfterClosing += SolutionClosed;
             mDTE.Events.SolutionEvents.Opened += SolutionOpened;
+
+            mLog = log;
         }
 
         internal void Dispose()
@@ -39,7 +42,10 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
             }
             catch (Exception ex)
             {
-
+                mLog.LogEntry(
+                    (UInt32)__ACTIVITYLOG_ENTRYTYPE.ALE_ERROR, 
+                    "WindowTitleChanger",
+                    string.Format("An error occured while updating the window title: {0}", ex.Message));
             }
         }
 
@@ -79,18 +85,25 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
 
         void SolutionOpened()
         {
-            SelectorWatcher.ResetWatcher(mDTE.Solution.FullName, mBuilder);
+            mSelectorWatcher = new SelectorWatcher(mDTE.Solution.FullName, mBuilder, mLog);
+            mSelectorWatcher.Initialize();
         }
 
         void SolutionClosed()
         {
-            SelectorWatcher.Dispose();
+            if (mSelectorWatcher == null)
+                return;
+
+            mSelectorWatcher.Dispose();
+            mSelectorWatcher = null;
         }
 
         readonly object mUpdateWindowTitleLock = new object();
 
         DTE2 mDTE;
         WindowTitleBuilder mBuilder;
+        SelectorWatcher mSelectorWatcher;
+        IVsActivityLog mLog;
     }
 }
 

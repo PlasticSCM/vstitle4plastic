@@ -1,31 +1,34 @@
 ﻿using System;
 using System.IO;
 
+using Microsoft.VisualStudio.Shell.Interop;
+
 using Codice.CmdRunner;
 
 namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
 {
     internal class SelectorWatcher
     {
-        internal static void ResetWatcher(
+        internal SelectorWatcher(
             string solutionPath, 
-            WindowTitleBuilder builder)
+            WindowTitleBuilder builder,
+            IVsActivityLog log)
         {
-            if(mWatcher != null)
-                mWatcher.Dispose();
-
-            string wkPath = GetWorkspacePath(solutionPath);
-
-            if (string.IsNullOrEmpty(wkPath))
-                return;
-
             mBuilder = builder;
-            mWkPath = wkPath;
-            UpdateSelector(builder);
-            InitializeWatcher(wkPath);
+            mLog = log;
+            mWkPath = GetWorkspacePath(solutionPath);
         }
 
-        internal static void Dispose()
+        internal void Initialize()
+        {
+            if (string.IsNullOrEmpty(mWkPath))
+                return;
+
+            UpdateSelector(mBuilder);
+            InitializeWatcher(mWkPath);
+        }
+
+        internal void Dispose()
         {
             mBuilder.SetSelector(string.Empty);
 
@@ -35,7 +38,7 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
             mWatcher.Dispose();
         }
 
-        static void InitializeWatcher(string wkspacePath)
+        void InitializeWatcher(string wkspacePath)
         {
             string plasticWkFolder = Path.Combine(wkspacePath, DEFAULT_WK_CONFIG_DIR);
             string selectorFile = Path.Combine(plasticWkFolder, SELECTOR_FILE);
@@ -50,7 +53,7 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
             mWatcher.Changed += new FileSystemEventHandler(OnSelectorChanged);
         }
 
-        static string GetWorkspacePath(string solutionpath)
+        string GetWorkspacePath(string solutionpath)
         {
             string wkInfo;
             string error;
@@ -70,19 +73,22 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
             return fields[1];
         }
 
-        static void OnSelectorChanged(object sender, FileSystemEventArgs e)
+        void OnSelectorChanged(object sender, FileSystemEventArgs e)
         {
             try
             {
                 UpdateSelector(mBuilder);
             }
-            catch(Exception e)
+            catch(Exception ex)
             {
-
+                mLog.LogEntry(
+                    (UInt32)__ACTIVITYLOG_ENTRYTYPE.ALE_ERROR,
+                    "WindowTitleChanger",
+                    string.Format("An error occured while updating the selector: {0}", ex.Message));
             }
         }
 
-        static void UpdateSelector(WindowTitleBuilder builder)
+        void UpdateSelector(WindowTitleBuilder builder)
         {
             string selectorInfo;
             string error;
@@ -99,9 +105,10 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
             builder.SetSelector(lines[0]);
         }
 
-        static WindowTitleBuilder mBuilder;
-        static FileSystemWatcher mWatcher;
-        static string mWkPath;
+        WindowTitleBuilder mBuilder;
+        FileSystemWatcher mWatcher;
+        string mWkPath;
+        IVsActivityLog mLog;
 
         const string DEFAULT_WK_CONFIG_DIR = ".plastic";
         const string SELECTOR_FILE = "plastic.selector";

@@ -25,7 +25,9 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
         {
             base.Initialize();
 
-            mTitleChanger = new WindowTitleChanger((DTE2)(GetGlobalService(typeof(DTE))));
+            IVsActivityLog log = GetService(typeof(SVsActivityLog)) as IVsActivityLog;
+
+            mTitleChanger = new WindowTitleChanger((DTE2)(GetGlobalService(typeof(DTE))), log);
             this.ResetTitleTimer = new System.Windows.Forms.Timer { Interval = TIMER_INTERVAL };
             this.ResetTitleTimer.Tick += mTitleChanger.UpdateWindowTitleAsync;
             this.ResetTitleTimer.Start();
