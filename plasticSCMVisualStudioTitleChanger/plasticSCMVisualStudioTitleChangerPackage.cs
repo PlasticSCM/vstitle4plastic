@@ -40,6 +40,6 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
 
         System.Windows.Forms.Timer ResetTitleTimer;
 
-        const int TIMER_INTERVAL = 30000;
+        const int TIMER_INTERVAL = 1000;
     }
 }

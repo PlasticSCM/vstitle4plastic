@@ -164,7 +164,7 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
         }
 
         string mIdeName;
-        string mSelector = " Hellow world!";
+        string mSelector = string.Empty;
         object mSelectorLock = new object();
 
         const string DOCUMENT_NAME = "[documentName]";
