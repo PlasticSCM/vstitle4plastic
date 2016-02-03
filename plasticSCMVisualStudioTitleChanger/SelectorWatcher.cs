@@ -83,7 +83,7 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
             {
                 mLog.LogEntry(
                     (UInt32)__ACTIVITYLOG_ENTRYTYPE.ALE_ERROR,
-                    "WindowTitleChanger",
+                    "SelectorWatcher",
                     string.Format("An error occured while updating the selector: {0}", ex.Message));
             }
         }

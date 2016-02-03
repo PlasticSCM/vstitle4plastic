@@ -62,8 +62,12 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
                         System.Windows.Application.Current.MainWindow.Title = newTitle;
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    mLog.LogEntry(
+                        (UInt32)__ACTIVITYLOG_ENTRYTYPE.ALE_ERROR,
+                        "WindowTitleChanger",
+                        string.Format("An error occured while changing the VS window title: {0}", ex.Message));
                 }
             });
         }
