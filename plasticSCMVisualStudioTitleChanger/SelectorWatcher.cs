@@ -72,10 +72,17 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
 
         static void OnSelectorChanged(object sender, FileSystemEventArgs e)
         {
-            UpdateSelector(mBuilder);
+            try
+            {
+                UpdateSelector(mBuilder);
+            }
+            catch(Exception e)
+            {
+
+            }
         }
 
-        internal static void UpdateSelector(WindowTitleBuilder builder)
+        static void UpdateSelector(WindowTitleBuilder builder)
         {
             string selectorInfo;
             string error;

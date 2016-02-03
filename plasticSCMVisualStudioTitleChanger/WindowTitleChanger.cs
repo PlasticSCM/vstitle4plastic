@@ -45,27 +45,21 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
 
         void ChangeWindowTitle()
         {
-            try
+            BeginInvokeOnUIThread(() =>
             {
-                BeginInvokeOnUIThread(() =>
+                try
                 {
-                    try
+                    string newTitle = mBuilder.BuildWindowTitle(mDTE);
+                    System.Windows.Application.Current.MainWindow.Title = mDTE.MainWindow.Caption;
+                    if (System.Windows.Application.Current.MainWindow.Title != newTitle)
                     {
-                        string newTitle = mBuilder.BuildWindowTitle(mDTE);
-                        System.Windows.Application.Current.MainWindow.Title = mDTE.MainWindow.Caption;
-                        if (System.Windows.Application.Current.MainWindow.Title != newTitle)
-                        {
-                            System.Windows.Application.Current.MainWindow.Title = newTitle;
-                        }
+                        System.Windows.Application.Current.MainWindow.Title = newTitle;
                     }
-                    catch (Exception)
-                    {
-                    }
-                });
-            }
-            catch (Exception ex)
-            {
-            }
+                }
+                catch (Exception)
+                {
+                }
+            });
         }
 
         public void BeginInvokeOnUIThread(Action action)
