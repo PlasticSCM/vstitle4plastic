@@ -52,11 +52,14 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
 
         static string GetWorkspacePath(string solutionpath)
         {
-            string wkInfo = CmdRunner.ExecuteCommandWithStringResult(
-                string.Format("cm gwp {0}", solutionpath), 
-                Directory.GetParent(solutionpath).FullName);
+            string wkInfo;
+            string error;
 
-            if (wkInfo.Contains(NOT_WORKSPACE_PATH))
+            int cmdres = CmdRunner.ExecuteCommandWithResult(
+                string.Format("cm gwp {0}", solutionpath), 
+                Directory.GetParent(solutionpath).FullName, out wkInfo, out error, false);
+
+            if (cmdres != 0 || !string.IsNullOrEmpty(error))
                 return null;
 
             string[] fields = wkInfo.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
@@ -74,15 +77,16 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
 
         internal static void UpdateSelector(WindowTitleBuilder builder)
         {
-            string workspaceinfo = CmdRunner.ExecuteCommandWithStringResult("cm wi", mWkPath);
+            string selectorInfo;
+            string error;
 
-            if(workspaceinfo.Contains(NOT_WORKSPACE_PATH) || string.IsNullOrEmpty(workspaceinfo))
-            {
-                builder.SetSelector(string.Empty);
+            int cmdres = CmdRunner.ExecuteCommandWithResult(
+                "cm wi", mWkPath, out selectorInfo, out error, false);
+
+            if (cmdres != 0 || !string.IsNullOrEmpty(error))
                 return;
-            }
 
-            string[] lines = workspaceinfo.Split(
+            string[] lines = selectorInfo.Split(
                 new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
 
             builder.SetSelector(lines[0]);
@@ -92,7 +96,6 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
         static FileSystemWatcher mWatcher;
         static string mWkPath;
 
-        const string NOT_WORKSPACE_PATH = "is not in a workspace";
         const string DEFAULT_WK_CONFIG_DIR = ".plastic";
         const string SELECTOR_FILE = "plastic.selector";
     }
