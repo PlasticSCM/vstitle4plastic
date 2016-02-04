@@ -27,21 +27,54 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
 
             IVsActivityLog log = GetService(typeof(SVsActivityLog)) as IVsActivityLog;
 
-            mTitleChanger = new WindowTitleChanger((DTE2)(GetGlobalService(typeof(DTE))), log);
-            this.ResetTitleTimer = new System.Windows.Forms.Timer { Interval = TIMER_INTERVAL };
-            this.ResetTitleTimer.Tick += mTitleChanger.UpdateWindowTitleAsync;
-            this.ResetTitleTimer.Start();
+            mDTE = (DTE2)(GetGlobalService(typeof(DTE)));
+
+
+            mBuilder = new WindowTitleBuilder(mDTE);
+            mTitleChanger = new WindowTitleChanger(mDTE, log);
+            mSelectorWatcher = new SelectorWatcher(mBuilder, log);
+            mTitleUpdater = new WindowTitleUpdater(mBuilder);
+
+            mDTE.Events.SolutionEvents.AfterClosing += SolutionClosed;
+            mDTE.Events.SolutionEvents.Opened += SolutionOpened;
+
+            mTitleUpdater.Start();
         }
 
         protected override void Dispose(bool disposing)
         {
-            this.ResetTitleTimer.Dispose();
-            mTitleChanger.Dispose();
+            mDTE.Events.SolutionEvents.AfterClosing -= SolutionClosed;
+            mDTE.Events.SolutionEvents.Opened -= SolutionOpened;
+
+            if (mTitleUpdater != null)
+                mTitleUpdater.Stop();
+
+            if (mSelectorWatcher != null)
+                mSelectorWatcher.Dispose();
+
             base.Dispose(disposing);
         }
 
-        System.Windows.Forms.Timer ResetTitleTimer;
+        void SolutionOpened()
+        {
+            mSelectorWatcher.Initialize(mDTE.Solution.FullName);
+        }
+
+        void SolutionClosed()
+        {
+            if (mSelectorWatcher == null)
+                return;
+
+            mSelectorWatcher.Dispose();
+        }
+
+
+        WindowTitleBuilder mBuilder;
         WindowTitleChanger mTitleChanger;
+        SelectorWatcher mSelectorWatcher;
+        WindowTitleUpdater mTitleUpdater;
+
+        DTE2 mDTE;
 
         const int TIMER_INTERVAL = 1000;
     }

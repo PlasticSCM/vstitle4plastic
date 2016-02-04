@@ -9,15 +9,20 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
 {
     internal class WindowTitleBuilder
     {
-        internal string BuildWindowTitle(DTE2 dte)
+        internal WindowTitleBuilder(DTE2 dte)
         {
-            if (mIdeName == null && dte.MainWindow != null)
-                mIdeName = this.GetIDEName(dte, SELECTOR_PATTERN);
+            mDte = dte;
+        }
+
+        internal string BuildWindowTitle()
+        {
+            if (mIdeName == null && mDte.MainWindow != null)
+                mIdeName = this.GetIDEName(mDte, SELECTOR_PATTERN);
 
             if (string.IsNullOrEmpty(mIdeName))
                 return null;
 
-            return GetNewTitle(dte, mIdeName, GetWindowTitlePattern(dte));
+            return GetNewTitle(mDte, mIdeName, GetWindowTitlePattern(mDte));
         }
 
         internal void SetSelector(string selector)
@@ -166,6 +171,9 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
         string mIdeName;
         string mSelector = string.Empty;
         object mSelectorLock = new object();
+
+
+        DTE2 mDte;
 
         const string DOCUMENT_NAME = "[documentName]";
         const string SOLUTION_NAME = "[solutionName]";

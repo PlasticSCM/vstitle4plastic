@@ -9,35 +9,21 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
 {
     internal class WindowTitleChanger
     {
-        internal WindowTitleChanger(DTE2 dte, IVsActivityLog log)
+        internal WindowTitleChanger(
+            DTE2 dte, 
+            IVsActivityLog log)
         {
-            mBuilder = new WindowTitleBuilder();
-
             mDTE = dte;
-            mDTE.Events.SolutionEvents.AfterClosing += SolutionClosed;
-            mDTE.Events.SolutionEvents.Opened += SolutionOpened;
-
             mLog = log;
         }
 
-        internal void Dispose()
-        {
-            mDTE.Events.SolutionEvents.AfterClosing -= SolutionClosed;
-            mDTE.Events.SolutionEvents.Opened -= SolutionOpened;
-        }
-
-        internal void UpdateWindowTitleAsync(object state, EventArgs e)
-        {
-            System.Threading.Tasks.Task.Factory.StartNew(DoUpdateWindowTitle);
-        }
-
-        void DoUpdateWindowTitle()
+        internal static void UpdateWindowTitle(string newTitle)
         {
             try
             {
                 lock (mUpdateWindowTitleLock)
                 {
-                    ChangeWindowTitle();
+                    ChangeWindowTitle(newTitle);
                 }
             }
             catch (Exception ex)
@@ -49,13 +35,12 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
             }
         }
 
-        void ChangeWindowTitle()
+        static void ChangeWindowTitle(string newTitle)
         {
             BeginInvokeOnUIThread(() =>
             {
                 try
                 {
-                    string newTitle = mBuilder.BuildWindowTitle(mDTE);
                     System.Windows.Application.Current.MainWindow.Title = mDTE.MainWindow.Caption;
                     if (System.Windows.Application.Current.MainWindow.Title != newTitle)
                     {
@@ -72,7 +57,7 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
             });
         }
 
-        public void BeginInvokeOnUIThread(Action action)
+        static void BeginInvokeOnUIThread(Action action)
         {
             var dispatcher = System.Windows.Application.Current.Dispatcher;
             if (dispatcher == null)
@@ -81,33 +66,10 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
             dispatcher.BeginInvoke(action);
         }
 
-        void DisposeEvents()
-        {
-            mDTE.Events.SolutionEvents.AfterClosing -= SolutionClosed;
-            mDTE.Events.SolutionEvents.Opened -= SolutionOpened;
-        }
+        static readonly object mUpdateWindowTitleLock = new object();
 
-        void SolutionOpened()
-        {
-            mSelectorWatcher = new SelectorWatcher(mDTE.Solution.FullName, mBuilder, mLog);
-            mSelectorWatcher.Initialize();
-        }
-
-        void SolutionClosed()
-        {
-            if (mSelectorWatcher == null)
-                return;
-
-            mSelectorWatcher.Dispose();
-            mSelectorWatcher = null;
-        }
-
-        readonly object mUpdateWindowTitleLock = new object();
-
-        DTE2 mDTE;
-        WindowTitleBuilder mBuilder;
-        SelectorWatcher mSelectorWatcher;
-        IVsActivityLog mLog;
+        static DTE2 mDTE;
+        static IVsActivityLog mLog;
     }
 }
 

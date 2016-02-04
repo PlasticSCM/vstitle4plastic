@@ -10,17 +10,17 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
     internal class SelectorWatcher
     {
         internal SelectorWatcher(
-            string solutionPath, 
             WindowTitleBuilder builder,
             IVsActivityLog log)
         {
             mBuilder = builder;
             mLog = log;
-            mWkPath = GetWorkspacePath(solutionPath);
         }
 
-        internal void Initialize()
+        internal void Initialize(string solutionPath)
         {
+            mWkPath = GetWorkspacePath(solutionPath);
+
             if (string.IsNullOrEmpty(mWkPath))
                 return;
 
