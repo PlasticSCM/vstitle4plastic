@@ -9,9 +9,9 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
     [PackageRegistration(UseManagedResourcesOnly = true)]
 
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)]
-    [Guid(GuidList.guidplasticSCMVisualStudioTitleChangerPkgString)]
+    [Guid(GuidList.guidVsTitle4PlasticPkgString)]
     [ProvideAutoLoad(Microsoft.VisualStudio.VSConstants.UICONTEXT.SolutionExists_string)]
-    public sealed class PlasticSCMVisualStudioTitleChangerPackage : Package
+    public sealed class VsTitle4Plastic : Package
     {
         protected override void Initialize()
         {
