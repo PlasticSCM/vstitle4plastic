@@ -35,6 +35,7 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
             if (mWatcher == null)
                 return;
 
+            mWatcher.Changed -= OnSelectorChanged;
             mWatcher.Dispose();
         }
 
