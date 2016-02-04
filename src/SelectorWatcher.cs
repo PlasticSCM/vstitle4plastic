@@ -42,6 +42,16 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
             string plasticWkFolder = Path.Combine(wkspacePath, DEFAULT_WK_CONFIG_DIR);
             string selectorFile = Path.Combine(plasticWkFolder, SELECTOR_FILE);
 
+            if (!File.Exists(selectorFile))
+            {
+                mLog.LogEntry(
+                    (UInt32)__ACTIVITYLOG_ENTRYTYPE.ALE_WARNING,
+                    "SelectorWatcher",
+                    string.Format("The selector file {0} does not exist", selectorFile));
+
+                return;
+            }
+
             mWatcher = new FileSystemWatcher();
             mWatcher.Path = Path.GetDirectoryName(selectorFile);
             mWatcher.Filter = Path.GetFileName(selectorFile);
@@ -58,7 +68,7 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
             string error;
 
             int cmdres = CmdRunner.ExecuteCommandWithResult(
-                string.Format("cm gwp . --format=\"{{1}}\"", solutionpath),
+                string.Format("cm gwp . --format=\"{{1}}\""),
                 Directory.GetParent(solutionpath).FullName, out wkPath, out error, false);
 
             if (cmdres != 0 || !string.IsNullOrEmpty(error))
