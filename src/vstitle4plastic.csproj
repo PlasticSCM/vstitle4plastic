@@ -135,7 +135,6 @@
     <Compile Include="ActivityLog.cs" />
     <Compile Include="DTEService.cs" />
     <Compile Include="Guids.cs" />
-    <Compile Include="PlasticSCMVisualStudioTitleChangerPackage.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -144,6 +143,7 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SelectorWatcher.cs" />
+    <Compile Include="VSTitle4Plastic.cs" />
     <Compile Include="WindowTitleBuilder.cs" />
     <Compile Include="WindowTitleSetter.cs" />
     <Compile Include="WindowTitleUpdater.cs" />
