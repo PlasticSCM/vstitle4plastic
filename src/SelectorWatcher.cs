@@ -9,15 +9,12 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
 {
     internal class SelectorWatcher
     {
-        internal SelectorWatcher(
-            WindowTitleBuilder builder,
-            IVsActivityLog log)
+        internal SelectorWatcher(WindowTitleBuilder builder)
         {
             mBuilder = builder;
-            mLog = log;
         }
 
-        internal void Initialize(string solutionPath)
+        internal void StartWatcher(string solutionPath)
         {
             mWkPath = GetWorkspacePath(solutionPath);
 
@@ -28,7 +25,7 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
             InitializeWatcher(mWkPath);
         }
 
-        internal void Dispose()
+        internal void StopWatcher()
         {
             mBuilder.SetSelector(string.Empty);
 
@@ -37,6 +34,7 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
 
             mWatcher.Changed -= OnSelectorChanged;
             mWatcher.Dispose();
+            mWatcher = null;
         }
 
         void InitializeWatcher(string wkspacePath)
@@ -109,9 +107,10 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
         WindowTitleBuilder mBuilder;
         FileSystemWatcher mWatcher;
         string mWkPath;
-        IVsActivityLog mLog;
 
         const string DEFAULT_WK_CONFIG_DIR = ".plastic";
         const string SELECTOR_FILE = "plastic.selector";
+
+        static IVsActivityLog mLog = ActivityLog.Get();
     }
 }

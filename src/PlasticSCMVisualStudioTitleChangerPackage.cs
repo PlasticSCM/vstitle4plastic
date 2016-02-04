@@ -1,16 +1,7 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Globalization;
 using System.Runtime.InteropServices;
-using System.ComponentModel.Design;
-
-using EnvDTE80;
-using EnvDTE;
-using Microsoft.Win32;
-using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
 {
@@ -25,18 +16,14 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
         {
             base.Initialize();
 
-            IVsActivityLog log = GetService(typeof(SVsActivityLog)) as IVsActivityLog;
+            ActivityLog.Initialize(GetService(typeof(SVsActivityLog)) as IVsActivityLog);
 
-            mDTE = (DTE2)(GetGlobalService(typeof(DTE)));
+            mWindowTitleBuilder = new WindowTitleBuilder();
+            mSelectorWatcher = new SelectorWatcher(mWindowTitleBuilder);
+            mTitleUpdater = new WindowTitleUpdater(mWindowTitleBuilder);
 
-
-            mBuilder = new WindowTitleBuilder(mDTE);
-            mTitleChanger = new WindowTitleChanger(mDTE, log);
-            mSelectorWatcher = new SelectorWatcher(mBuilder, log);
-            mTitleUpdater = new WindowTitleUpdater(mBuilder);
-
-            mDTE.Events.SolutionEvents.AfterClosing += SolutionClosed;
-            mDTE.Events.SolutionEvents.Opened += SolutionOpened;
+            DTEService.Get().Events.SolutionEvents.AfterClosing += SolutionClosed;
+            DTEService.Get().Events.SolutionEvents.Opened += SolutionOpened;
 
             mTitleUpdater.Start();
         }
@@ -48,19 +35,19 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
             if (!disposing)
                 return;
 
-            mDTE.Events.SolutionEvents.AfterClosing -= SolutionClosed;
-            mDTE.Events.SolutionEvents.Opened -= SolutionOpened;
+            DTEService.Get().Events.SolutionEvents.AfterClosing -= SolutionClosed;
+            DTEService.Get().Events.SolutionEvents.Opened -= SolutionOpened;
 
             if (mTitleUpdater != null)
                 mTitleUpdater.Stop();
 
             if (mSelectorWatcher != null)
-                mSelectorWatcher.Dispose();
+                mSelectorWatcher.StopWatcher();
         }
 
         void SolutionOpened()
         {
-            mSelectorWatcher.Initialize(mDTE.Solution.FullName);
+            mSelectorWatcher.StartWatcher(DTEService.Get().Solution.FullName);
         }
 
         void SolutionClosed()
@@ -68,17 +55,11 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
             if (mSelectorWatcher == null)
                 return;
 
-            mSelectorWatcher.Dispose();
+            mSelectorWatcher.StopWatcher();
         }
 
-
-        WindowTitleBuilder mBuilder;
-        WindowTitleChanger mTitleChanger;
+        WindowTitleBuilder mWindowTitleBuilder;
         SelectorWatcher mSelectorWatcher;
         WindowTitleUpdater mTitleUpdater;
-
-        DTE2 mDTE;
-
-        const int TIMER_INTERVAL = 1000;
     }
 }

@@ -132,8 +132,10 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActivityLog.cs" />
+    <Compile Include="DTEService.cs" />
     <Compile Include="Guids.cs" />
-    <Compile Include="plasticSCMVisualStudioTitleChangerPackage.cs" />
+    <Compile Include="PlasticSCMVisualStudioTitleChangerPackage.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

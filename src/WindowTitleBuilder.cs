@@ -4,25 +4,21 @@ using System.Text.RegularExpressions;
 using EnvDTE;
 using EnvDTE80;
 using System.IO;
+using Microsoft.VisualStudio.Shell;
 
 namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
 {
     internal class WindowTitleBuilder
     {
-        internal WindowTitleBuilder(DTE2 dte)
-        {
-            mDte = dte;
-        }
-
         internal string BuildWindowTitle()
         {
-            if (mIdeName == null && mDte.MainWindow != null)
-                mIdeName = this.GetIDEName(mDte, SELECTOR_PATTERN);
+            if (mIdeName == null && DTEService.Get().MainWindow != null)
+                mIdeName = GetIDEName(SELECTOR_PATTERN);
 
             if (string.IsNullOrEmpty(mIdeName))
                 return null;
 
-            return GetNewTitle(mDte, mIdeName, GetWindowTitlePattern(mDte));
+            return GetNewTitle(mIdeName, GetWindowTitlePattern());
         }
 
         internal void SetSelector(string selector)
@@ -33,8 +29,9 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
             }
         }
 
-        string GetNewTitle(DTE2 dte, string ideName, string pattern)
+        string GetNewTitle(string ideName, string pattern)
         {
+            DTE2 dte = DTEService.Get();
             Solution solution = dte.Solution;
             Document activeDocument = dte.ActiveDocument;
             Window activeWindow = dte.ActiveWindow;
@@ -48,7 +45,7 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
                 }
             }
 
-            pattern = pattern.Replace(DOCUMENT_NAME, GetActiveDocumentName(dte, activeDocument, activeWindow));
+            pattern = pattern.Replace(DOCUMENT_NAME, GetActiveDocumentName(activeDocument, activeWindow));
             pattern = pattern.Replace(SOLUTION_NAME, GetSolutionName(solution));
             pattern = pattern.Replace(IDE_NAME, ideName);
             pattern = pattern.Replace(PLASTIC_SELECTOR, GetSelectorString());
@@ -56,8 +53,9 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
             return pattern;
         }
 
-        string GetWindowTitlePattern(DTE2 dte)
+        string GetWindowTitlePattern()
         {
+            DTE2 dte = DTEService.Get();
             Solution solution = dte.Solution;
 
             if (solution == null || solution.FullName == string.Empty)
@@ -72,27 +70,22 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
             }
 
             if (dte.Debugger == null || dte.Debugger.CurrentMode == dbgDebugMode.dbgDesignMode)
-            {
                 return string.Format("{0}{1} - {2}", SOLUTION_NAME, PLASTIC_SELECTOR, IDE_NAME);
-            }
+
             if (dte.Debugger.CurrentMode == dbgDebugMode.dbgBreakMode)
-            {
                 return string.Format("{0} (Debugging){1} - {2}", SOLUTION_NAME, PLASTIC_SELECTOR, IDE_NAME);
-            }
 
             if (dte.Debugger.CurrentMode == dbgDebugMode.dbgRunMode)
-            {
                 return string.Format("{0} (Running){1} - {2}", SOLUTION_NAME, PLASTIC_SELECTOR, IDE_NAME);
-            }
 
             return IDE_NAME;
         }
 
-        string GetIDEName(DTE2 dte, string selectorPattern)
+        string GetIDEName(string selectorPattern)
         {
             try
             {
-                Match m = GetMatchingPattern(dte, dte.MainWindow.Caption, selectorPattern);
+                Match m = GetMatchingPattern(DTEService.Get().MainWindow.Caption, selectorPattern);
 
                 if (!m.Success || m.Groups.Count < 2)
                     return null;
@@ -104,13 +97,16 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
             }
             catch (Exception)
             {
+                // LOG THIS
             }
 
-            return "";
+            return string.Empty;
         }
 
-        Match GetMatchingPattern(DTE2 dte, string currentTitle, string selectorPattern)
+        Match GetMatchingPattern(string currentTitle, string selectorPattern)
         {
+            DTE2 dte = DTEService.Get();
+
             Match match = new Regex(
                   @"^(.*) - (" + dte.Name + ".*) " + Regex.Escape(string.Format("{0} {1}", selectorPattern, "(.*)")) + "$",
                   RegexOptions.RightToLeft).Match(currentTitle);
@@ -132,21 +128,21 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
             return match;
         }
 
-        string GetActiveDocumentName(DTE2 dte, Document activeDocument, Window activeWindow)
+        string GetActiveDocumentName(Document activeDocument, Window activeWindow)
         {
             if (activeDocument != null)
                 return Path.GetFileName(activeDocument.FullName);
 
-            if (activeWindow != null && activeWindow.Caption != dte.MainWindow.Caption)
+            if (activeWindow != null && activeWindow.Caption != DTEService.Get().MainWindow.Caption)
                 return activeWindow.Caption;
 
-            return "";
+            return string.Empty;
         }
 
         string GetSolutionName(Solution solution)
         {
             return solution == null || string.IsNullOrEmpty(solution.FullName) ?
-                "" :
+                string.Empty :
                 Path.GetFileNameWithoutExtension(solution.FullName);
         }
 
@@ -171,9 +167,6 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
         string mIdeName;
         string mSelector = string.Empty;
         object mSelectorLock = new object();
-
-
-        DTE2 mDte;
 
         const string DOCUMENT_NAME = "[documentName]";
         const string SOLUTION_NAME = "[solutionName]";
