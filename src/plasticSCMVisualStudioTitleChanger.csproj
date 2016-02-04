@@ -40,7 +40,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CmdRunner">
-      <HintPath>lib\CmdRunner.dll</HintPath>
+      <HintPath>..\lib\CmdRunner.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.VisualStudio.OLE.Interop" />
@@ -164,6 +164,7 @@
   <ItemGroup>
     <Content Include="Resources\Package.ico" />
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <UseCodebase>true</UseCodebase>
   </PropertyGroup>
