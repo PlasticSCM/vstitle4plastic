@@ -43,6 +43,11 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
 
         protected override void Dispose(bool disposing)
         {
+            base.Dispose(disposing);
+
+            if (!disposing)
+                return;
+
             mDTE.Events.SolutionEvents.AfterClosing -= SolutionClosed;
             mDTE.Events.SolutionEvents.Opened -= SolutionOpened;
 
@@ -51,8 +56,6 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
 
             if (mSelectorWatcher != null)
                 mSelectorWatcher.Dispose();
-
-            base.Dispose(disposing);
         }
 
         void SolutionOpened()
