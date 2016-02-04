@@ -17,44 +17,23 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
             mLog = log;
         }
 
-        internal static void UpdateWindowTitle(string newTitle)
+        internal static void ChangeWindowTitle(string newTitle)
         {
             try
             {
-                lock (mUpdateWindowTitleLock)
+                System.Windows.Application.Current.MainWindow.Title = mDTE.MainWindow.Caption;
+                if (System.Windows.Application.Current.MainWindow.Title != newTitle)
                 {
-                    ChangeWindowTitle(newTitle);
+                    System.Windows.Application.Current.MainWindow.Title = newTitle;
                 }
             }
             catch (Exception ex)
             {
                 mLog.LogEntry(
-                    (UInt32)__ACTIVITYLOG_ENTRYTYPE.ALE_ERROR, 
+                    (UInt32)__ACTIVITYLOG_ENTRYTYPE.ALE_ERROR,
                     "WindowTitleChanger",
-                    string.Format("An error occured while updating the window title: {0}", ex.Message));
+                    string.Format("An error occured while changing the VS window title: {0}", ex.Message));
             }
-        }
-
-        static void ChangeWindowTitle(string newTitle)
-        {
-            BeginInvokeOnUIThread(() =>
-            {
-                try
-                {
-                    System.Windows.Application.Current.MainWindow.Title = mDTE.MainWindow.Caption;
-                    if (System.Windows.Application.Current.MainWindow.Title != newTitle)
-                    {
-                        System.Windows.Application.Current.MainWindow.Title = newTitle;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    mLog.LogEntry(
-                        (UInt32)__ACTIVITYLOG_ENTRYTYPE.ALE_ERROR,
-                        "WindowTitleChanger",
-                        string.Format("An error occured while changing the VS window title: {0}", ex.Message));
-                }
-            });
         }
 
         static void BeginInvokeOnUIThread(Action action)
@@ -65,8 +44,6 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
 
             dispatcher.BeginInvoke(action);
         }
-
-        static readonly object mUpdateWindowTitleLock = new object();
 
         static DTE2 mDTE;
         static IVsActivityLog mLog;

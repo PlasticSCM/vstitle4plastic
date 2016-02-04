@@ -27,7 +27,7 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
 
         void UpdateWindowTitle(object sender, EventArgs e)
         {
-            WindowTitleChanger.UpdateWindowTitle(mTitleBuilder.BuildWindowTitle());
+            WindowTitleChanger.ChangeWindowTitle(mTitleBuilder.BuildWindowTitle());
         }
 
         System.Windows.Forms.Timer mResetTitleTimer;
