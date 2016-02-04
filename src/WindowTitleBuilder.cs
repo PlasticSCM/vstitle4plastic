@@ -1,10 +1,11 @@
 ﻿using System;
+using System.IO;
 using System.Text.RegularExpressions;
 
 using EnvDTE;
 using EnvDTE80;
-using System.IO;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
 {
@@ -95,9 +96,12 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
 
                 return m.Groups[1].Captures[0].Value;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // LOG THIS
+                mLog.LogEntry(
+                    (UInt32)__ACTIVITYLOG_ENTRYTYPE.ALE_ERROR,
+                    "WindowTitleBuilder",
+                    string.Format("Could'n get IDE name: {0}", ex.Message));
             }
 
             return string.Empty;
@@ -174,5 +178,7 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
         const string PLASTIC_SELECTOR = "[selector]";
 
         const string SELECTOR_PATTERN = "PlasticSCM: ";
+
+        static IVsActivityLog mLog = ActivityLog.Get();
     }
 }

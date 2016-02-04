@@ -1,5 +1,6 @@
 ﻿using EnvDTE;
 using EnvDTE80;
+
 using Microsoft.VisualStudio.Shell;
 
 namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger

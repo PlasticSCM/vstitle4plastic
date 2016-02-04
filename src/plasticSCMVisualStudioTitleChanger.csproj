@@ -145,7 +145,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SelectorWatcher.cs" />
     <Compile Include="WindowTitleBuilder.cs" />
-    <Compile Include="WindowTitleChanger.cs" />
+    <Compile Include="WindowTitleSetter.cs" />
     <Compile Include="WindowTitleUpdater.cs" />
   </ItemGroup>
   <ItemGroup>

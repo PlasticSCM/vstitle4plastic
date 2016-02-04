@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+
 using Microsoft.VisualStudio.Shell.Interop;
 
 namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
@@ -10,9 +11,6 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
         {
             try
             {
-                // REVIEW!
-                Application.Current.MainWindow.Title = DTEService.Get().MainWindow.Caption;
-
                 if (Application.Current.MainWindow.Title == newTitle)
                     return;
 
@@ -22,7 +20,7 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
             {
                 mLog.LogEntry(
                     (UInt32)__ACTIVITYLOG_ENTRYTYPE.ALE_ERROR,
-                    "WindowTitleChanger",
+                    "WindowTitleSetter",
                     string.Format("An error occured while changing the VS window title: {0}", ex.Message));
             }
         }

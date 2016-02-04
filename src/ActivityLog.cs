@@ -1,4 +1,5 @@
 ﻿using System;
+
 using Microsoft.VisualStudio.Shell.Interop;
 
 namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
