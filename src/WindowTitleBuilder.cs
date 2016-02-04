@@ -101,7 +101,7 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
                 mLog.LogEntry(
                     (UInt32)__ACTIVITYLOG_ENTRYTYPE.ALE_ERROR,
                     "WindowTitleBuilder",
-                    string.Format("Could'n get IDE name: {0}", ex.Message));
+                    string.Format("Couldn't get IDE name: {0}", ex.Message));
             }
 
             return string.Empty;
