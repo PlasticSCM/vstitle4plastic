@@ -54,22 +54,17 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
 
         string GetWorkspacePath(string solutionpath)
         {
-            string wkInfo;
+            string wkPath;
             string error;
 
             int cmdres = CmdRunner.ExecuteCommandWithResult(
-                string.Format("cm gwp {0}", solutionpath), 
-                Directory.GetParent(solutionpath).FullName, out wkInfo, out error, false);
+                string.Format("cm gwp . --format=\"{{1}}\"", solutionpath),
+                Directory.GetParent(solutionpath).FullName, out wkPath, out error, false);
 
             if (cmdres != 0 || !string.IsNullOrEmpty(error))
                 return null;
 
-            string[] fields = wkInfo.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
-            if (fields.Length < 2)
-                return null;
-
-            return fields[1];
+            return wkPath.Trim();
         }
 
         void OnSelectorChanged(object sender, FileSystemEventArgs e)
@@ -93,15 +88,12 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
             string error;
 
             int cmdres = CmdRunner.ExecuteCommandWithResult(
-                "cm wi", mWkPath, out selectorInfo, out error, false);
+                "cm wi --machinereadable --fieldseparator", mWkPath, out selectorInfo, out error, false);
 
             if (cmdres != 0 || !string.IsNullOrEmpty(error))
                 return;
 
-            string[] lines = selectorInfo.Split(
-                new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-
-            builder.SetSelector(lines[0]);
+            builder.SetSelector(selectorInfo.Trim());
         }
 
         WindowTitleBuilder mBuilder;
