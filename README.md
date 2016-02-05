@@ -10,3 +10,5 @@ If you have a custom "WkConfigDir" setting on your client.conf file, you must ed
 When adding a solution to source control, if the solution is not contained inside a plastic workspace, you will need to close and reopen the solution again to see the selector in the window title. The same thing occurs if you create the plastic workspace outside Visual Studio.
 
 The solution includes a reference to CmdRunner.dll (source code available at https://github.com/PlasticSCM/plastic-cmdrunner). This utility allows to run commands from an external application. If you want to include the CmdRunner source code inside the plugin solution, you will have to generate a key file to sing it. 
+
+To install the package, compile the solution with Visual Studio and execute the VsTitle4Plastic.vsix file on the output directory.
