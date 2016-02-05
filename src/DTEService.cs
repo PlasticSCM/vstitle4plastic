@@ -3,7 +3,7 @@ using EnvDTE80;
 
 using Microsoft.VisualStudio.Shell;
 
-namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
+namespace CodiceSoftware.VsTitle4Plastic
 {
     static class DTEService
     {

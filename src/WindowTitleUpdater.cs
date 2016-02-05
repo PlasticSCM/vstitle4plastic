@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
+namespace CodiceSoftware.VsTitle4Plastic
 {
     internal class WindowTitleUpdater
     {

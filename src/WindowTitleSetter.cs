@@ -3,7 +3,7 @@ using System.Windows;
 
 using Microsoft.VisualStudio.Shell.Interop;
 
-namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
+namespace CodiceSoftware.VsTitle4Plastic
 {
     internal static class WindowTitleSetter
     {

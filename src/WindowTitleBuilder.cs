@@ -7,7 +7,7 @@ using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
-namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
+namespace CodiceSoftware.VsTitle4Plastic
 {
     internal class WindowTitleBuilder
     {

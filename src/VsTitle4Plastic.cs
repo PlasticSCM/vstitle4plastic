@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
-namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
+namespace CodiceSoftware.VsTitle4Plastic
 {
     [PackageRegistration(UseManagedResourcesOnly = true)]
 

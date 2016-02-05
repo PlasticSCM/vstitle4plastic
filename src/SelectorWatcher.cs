@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 
 using Codice.CmdRunner;
 
-namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
+namespace CodiceSoftware.VsTitle4Plastic
 {
     internal class SelectorWatcher
     {

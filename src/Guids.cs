@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
+namespace CodiceSoftware.VsTitle4Plastic
 {
     static class GuidList
     {

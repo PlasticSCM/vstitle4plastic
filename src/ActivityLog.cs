@@ -2,7 +2,7 @@
 
 using Microsoft.VisualStudio.Shell.Interop;
 
-namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
+namespace CodiceSoftware.VsTitle4Plastic
 {
     static class ActivityLog
     {
