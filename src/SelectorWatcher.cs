@@ -98,12 +98,25 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
             string error;
 
             int cmdres = CmdRunner.ExecuteCommandWithResult(
-                "cm wi --machinereadable --fieldseparator", mWkPath, out selectorInfo, out error, false);
+                string.Format("cm wi --machinereadable --fieldseparator={0}", FIELD_SEPARATOR), 
+                mWkPath, out selectorInfo, out error, false);
 
             if (cmdres != 0 || !string.IsNullOrEmpty(error))
                 return;
 
-            builder.SetSelector(selectorInfo.Trim());
+            string[] chunks = selectorInfo.Trim().Split(
+                new string[] {FIELD_SEPARATOR}, StringSplitOptions.RemoveEmptyEntries);
+
+            if(chunks.Length != 3)
+            {
+                builder.SetSelector(string.Empty);
+                return;
+            }
+
+            string selector = string.Format("{0}:{1}@{2}",
+                chunks[0].ToLower(), chunks[1], chunks[2]);
+
+            builder.SetSelector(selector);
         }
 
         WindowTitleBuilder mBuilder;
@@ -112,6 +125,7 @@ namespace CodiceSoftware.plasticSCMVisualStudioTitleChanger
 
         const string DEFAULT_WK_CONFIG_DIR = ".plastic";
         const string SELECTOR_FILE = "plastic.selector";
+        const string FIELD_SEPARATOR = "####";
 
         static IVsActivityLog mLog = ActivityLog.Get();
     }
