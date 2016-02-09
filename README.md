@@ -16,10 +16,10 @@ The solution includes a reference to CmdRunner.dll (source code available at htt
 
 These are some examples of customized window title with branch, label and changeset info:
 
-![Window title with branch info](img/branchTitle.png)
+![Window title with branch info](screenshots/branchTitle.png)
 
-![Window title with label info](img/labelTitle.png)
+![Window title with label info](screenshots/labelTitle.png)
 
-![Window title with changeset info](img/changesetTitle.png)
+![Window title with changeset info](screenshots/changesetTitle.png)
 
 
