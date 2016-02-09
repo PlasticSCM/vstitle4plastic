@@ -16,7 +16,7 @@ The binary files for the extension are available at the Visual Studio Gallery, y
 
 **Supported versions: greater or equal than Visual Studio 2012.**
 
-These are some examples of customized window title with branch, label and changeset info:
+These are some examples of customized window titles with branch, label and changeset info:
 
 ![Window title with branch info](screenshots/branchTitle.png)
 
