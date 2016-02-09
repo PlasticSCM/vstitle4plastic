@@ -12,6 +12,8 @@ When adding a solution to source control, if the solution is not contained insid
 
 The solution includes a reference to CmdRunner.dll (source code available at https://github.com/PlasticSCM/plastic-cmdrunner). This tool allows developers to run commands from an external application. If you want to include the CmdRunner source code inside the plugin solution, you will have to generate a key file to sign it. 
 
+The binary files for the extension are available at the Visual Studio Gallery, you can download them here: https://visualstudiogallery.msdn.microsoft.com/bbfc6ce9-4b6e-4e26-a101-9e6f5d039eb1
+
 **Supported versions: greater or equal than Visual Studio 2012.**
 
 These are some examples of customized window title with branch, label and changeset info:
