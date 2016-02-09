@@ -68,7 +68,7 @@ namespace CodiceSoftware.VsTitle4Plastic
             string error;
 
             int cmdres = CmdRunner.ExecuteCommandWithResult(
-                string.Format("cm gwp . --format=\"{{1}}\""),
+                string.Format("{0} gwp . --format=\"{{1}}\"", DEFAULT_PLASTIC_COMMAND),
                 Directory.GetParent(solutionpath).FullName, out wkPath, out error, false);
 
             if (cmdres != 0 || !string.IsNullOrEmpty(error))
@@ -98,7 +98,8 @@ namespace CodiceSoftware.VsTitle4Plastic
             string error;
 
             int cmdres = CmdRunner.ExecuteCommandWithResult(
-                string.Format("cm wi --machinereadable --fieldseparator={0}", FIELD_SEPARATOR), 
+                string.Format("{0} wi --machinereadable --fieldseparator={1}",
+                DEFAULT_PLASTIC_COMMAND, FIELD_SEPARATOR), 
                 mWkPath, out selectorInfo, out error, false);
 
             if (cmdres != 0 || !string.IsNullOrEmpty(error))
@@ -123,7 +124,8 @@ namespace CodiceSoftware.VsTitle4Plastic
         FileSystemWatcher mWatcher;
         string mWkPath;
 
-        const string DEFAULT_WK_CONFIG_DIR = ".plastic";
+        const string DEFAULT_PLASTIC_COMMAND = "bcm";
+        const string DEFAULT_WK_CONFIG_DIR = ".bplastic";
         const string SELECTOR_FILE = "plastic.selector";
         const string FIELD_SEPARATOR = "####";
 

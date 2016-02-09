@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualStudio.Shell.Interop;
+using System;
 using System.Windows.Forms;
 
 namespace CodiceSoftware.VsTitle4Plastic
@@ -28,13 +29,25 @@ namespace CodiceSoftware.VsTitle4Plastic
 
         void UpdateWindowTitle(object sender, EventArgs e)
         {
-            WindowTitleSetter.SetWindowTitle(
-                mTitleBuilder.BuildWindowTitle());
+            try
+            {
+                WindowTitleSetter.SetWindowTitle(
+                    mTitleBuilder.BuildWindowTitle());
+            }
+            catch(Exception ex)
+            {
+                mLog.LogEntry(
+                    (UInt32)__ACTIVITYLOG_ENTRYTYPE.ALE_WARNING,
+                    "WindowTitleUpdater",
+                    string.Format("An error occured while updating the window title: {0}", ex.Message));
+            }
         }
 
         Timer mResetTitleTimer;
         WindowTitleBuilder mTitleBuilder;
 
         const int TIMER_INTERVAL = 1000;
+
+        static IVsActivityLog mLog = ActivityLog.Get();
     }
 }
