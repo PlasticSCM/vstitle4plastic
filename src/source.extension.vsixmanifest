@@ -3,8 +3,11 @@
   <Metadata>
     <Identity Id="433f343b-126f-4dc5-baf8-bc12f7ca07d9" Version="1.0" Language="en-US" Publisher="Codice Software" />
     <DisplayName>VsTitle4Plastic</DisplayName>
-    <Description xml:space="preserve">This extensions allows to include information about the Plastic SCM workspace selector inside the Visual Studio window title</Description>
+    <Description xml:space="preserve">This extensions allows to include information about the Plastic SCM workspace selector inside the Visual Studio window title.</Description>
+    <MoreInfo>https://github.com/PlasticSCM/vstitle4plastic</MoreInfo>
     <Icon>Resources\Package.ico</Icon>
+    <PreviewImage>Resources\branchTitle.png</PreviewImage>
+    <Tags>plasticscm</Tags>
   </Metadata>
   <Installation InstalledByMsi="false">
     <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[11.0,14.0]" />
