@@ -124,8 +124,8 @@ namespace CodiceSoftware.VsTitle4Plastic
         FileSystemWatcher mWatcher;
         string mWkPath;
 
-        const string DEFAULT_PLASTIC_COMMAND = "bcm";
-        const string DEFAULT_WK_CONFIG_DIR = ".bplastic";
+        const string DEFAULT_PLASTIC_COMMAND = "cm";
+        const string DEFAULT_WK_CONFIG_DIR = ".plastic";
         const string SELECTOR_FILE = "plastic.selector";
         const string FIELD_SEPARATOR = "####";
 
